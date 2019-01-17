@@ -120,11 +120,15 @@ while True:
     if length > word_length:
         word = word
         print(word)
+        length = len(word)
         break
 
 print("Mot trouvé dans le dictionnaire...\nLe jeu commence !")
 guess = False
 while guess == False:
+    for i in range (0,length):
+        hidden[i]= hidden.append(*)
+        print(hidden)
     while True:
         choice1 = input("Rentrez la première lettre\n> ")
         if choice1.isalpha() == True:
@@ -137,4 +141,4 @@ while guess == False:
             os.system("clear")
             print("Valeur saisie non valide.", end=" ")
             continue
-print(choice1)
+    print(choice1)
