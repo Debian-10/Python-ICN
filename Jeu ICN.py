@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+9# -*- coding: utf-8 -*-
 import random
 import urllib.request
 import os
@@ -116,6 +116,25 @@ else:
 
 while True:
     word = random.choice(open(file_name).read().split()).strip()
-    if len(word) > word_length:
+    length = len(word)
+    if length > word_length:
+        word = word
         print(word)
         break
+
+print("Mot trouvé dans le dictionnaire...\nLe jeu commence !")
+guess = False
+while guess == False:
+    while True:
+        choice1 = input("Rentrez la première lettre\n> ")
+        if choice1.isalpha() == True:
+            if len(choice1) > 1:
+                print("Trop de charactères saisis.", end=" ")
+                continue
+            else:
+                break
+        else:
+            os.system("clear")
+            print("Valeur saisie non valide.", end=" ")
+            continue
+print(choice1)
