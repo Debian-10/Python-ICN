@@ -3,6 +3,7 @@ import random
 import urllib.request
 import os
 import hashlib
+import unidecode
 from pathlib import Path
 
 word_length = 4 # minimum word length
@@ -113,24 +114,27 @@ else:
 ####################
 
 # Choose random word to guess
-
+c = 0
+c1 = 1
 while True:
     word = random.choice(open(file_name).read().split()).strip()
-    length = len(word)
-    if length > word_length:
-        word = word
+    if len(word) > word_length:
+        word =
         print(word)
         length = len(word)
         break
 
-print("Mot trouvé dans le dictionnaire...\nLe jeu commence !")
+print("Mot trouvé dans le dictionnaire...Le jeu commence !")
 guess = False
+hidden = []
+for i in range(0, length):
+    hidden.append("*")
+print("Le mot à deviner est :", *hidden, sep=" ")
 while guess == False:
-    for i in range (0,length):
-        hidden[i]= hidden.append(*)
-        print(hidden)
     while True:
-        choice1 = input("Rentrez la première lettre\n> ")
+        c = c+1
+        print("Rentrez la lettre n°",c1)
+        choice1 = input("> ")
         if choice1.isalpha() == True:
             if len(choice1) > 1:
                 print("Trop de charactères saisis.", end=" ")
@@ -141,4 +145,12 @@ while guess == False:
             os.system("clear")
             print("Valeur saisie non valide.", end=" ")
             continue
-    print(choice1)
+    if choice1 not in word:
+        print("Mauvaise lettre !")
+        continue
+    if choice1 in word:
+        print("Lettre trouvée ! ")
+        c1=c1+1
+    if "*" not in hidden:
+        print("Vous avez gagné en",c,"tentatives !")
+        break
