@@ -5,10 +5,11 @@ import os
 import hashlib
 from pathlib import Path
 
+question = 1
 word_length = 4 # minimum word length
 custom_path_name = 'wordlist' # path where word lists are stored
-
 def jeu():
+    question = 0
     ####################################
     # Download and check the word list #
     ####################################
@@ -126,6 +127,12 @@ def jeu():
 
     hangman = (
     """
+        
+        
+        
+        
+        
+        
         ___                 
         """,
 
@@ -241,9 +248,14 @@ def jeu():
     print("Le mot à deviner est :", *hidden, sep=" ")
     while guess == False:
         while True:
-            c = c+1
+            c += 1
+            if max_false == false:
+                print(hangman[false])
+                print("Perdu ! le mot à deviner était :",word)
+                question = 1
             if c>1 and noprint==0:
                 print(*hidden, sep=" ")
+            print(hangman[false])
             print("Rentrez la lettre n°",c1)
             choice1 = input("\n> ")
             if choice1.isalpha() == True:
@@ -268,21 +280,24 @@ def jeu():
                 print("lettre déjà saisie !")
             else:
                 print("Lettre trouvée !")
-                c1 = c1 + 1
+                c1 += 1
             noprint=0
         if choice1 not in word:
             print("Lettre non trouvée !")
-            false=false+1
+            false += 1
         if "*" not in hidden:
             print("Et le mot est : \n")
             print(*hidden, sep=" ")
-            print("Vous avez gagné en", c, "tentatives !")
+            print("Vous avez gagné en", c, "tentatives ! \n")
             guess = True
+            question = 1
 
 # Ask if player wants to play again
 
-jouer = str(input("voulez-vous jouer ? (oui / non) "))
-if jouer == "oui" or jouer == "o" or jouer == "O":
-    jeu()
-elif jouer == "non" or jouer == "n" or jouer == "N":
-    input("Appuyez sur une touche pour continuer... ")
+while question == 1:
+    jouer = str(input("voulez-vous jouer ? (oui / non) \n"))
+    if jouer == "oui" or jouer == "o" or jouer == "O":
+        jeu()
+    elif jouer == "non" or jouer == "n" or jouer == "N":
+        input("Appuyez sur une touche pour continuer... ")
+        question = 0
