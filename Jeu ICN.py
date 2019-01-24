@@ -1,9 +1,8 @@
-9# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import random
 import urllib.request
 import os
 import hashlib
-import unidecode
 from pathlib import Path
 
 word_length = 4 # minimum word length
@@ -96,7 +95,6 @@ md5_a = (str(hasher1.hexdigest()))
 
 # Compare md5
 if md5_a == md5_b:
-    print(md5_b)
     print("Checksums OK \n")
 else:
     print(md5_a)
@@ -116,13 +114,16 @@ else:
 # Choose random word to guess
 c = 0
 c1 = 1
+noprint = 0
+existe = 0
 while True:
     word = random.choice(open(file_name).read().split()).strip()
     if len(word) > word_length:
-        word =
-        print(word)
+        word = word
         length = len(word)
         break
+word = list(word)
+print(word)
 
 print("Mot trouvé dans le dictionnaire...Le jeu commence !")
 guess = False
@@ -133,8 +134,10 @@ print("Le mot à deviner est :", *hidden, sep=" ")
 while guess == False:
     while True:
         c = c+1
+        if c>1 and noprint==0:
+            print(*hidden, sep=" ")
         print("Rentrez la lettre n°",c1)
-        choice1 = input("> ")
+        choice1 = input("\n> ")
         if choice1.isalpha() == True:
             if len(choice1) > 1:
                 print("Trop de charactères saisis.", end=" ")
@@ -142,15 +145,26 @@ while guess == False:
             else:
                 break
         else:
-            os.system("clear")
             print("Valeur saisie non valide.", end=" ")
+            noprint = 1
             continue
-    if choice1 not in word:
-        print("Mauvaise lettre !")
-        continue
     if choice1 in word:
-        print("Lettre trouvée ! ")
-        c1=c1+1
+        for i in range(len(word)):
+            if hidden[i] == choice1.upper():
+                existe = 1
+                break
+            if word[i] == choice1:
+                hidden[i] = choice1.upper()
+                existe = 0
+        if existe == 1:
+            print("lettre déjà saisie !")
+        else:
+            print("Lettre trouvée !")
+            c1 = c1 + 1
+        noprint=0
+    if choice1 not in word:
+        print("Lettre non trouvée !")
     if "*" not in hidden:
+        print(*hidden, sep = " ")
         print("Vous avez gagné en",c,"tentatives !")
         break
