@@ -58,7 +58,6 @@ def download():
     u = urllib.request.urlopen(url, file_name.encode('utf_8'))
     file_size = eval(u.info()['Content-Length'])
     file_size = int(file_size / 1000)
-    print("Téléchargement de: %s Taille: %s Kb" % (file_name, file_size), "dans", my_file, '\n')
     data = u.read()
     f = open(file_name, 'wb')
     f.write(data)
@@ -71,9 +70,9 @@ folder = os.path.join(cwd, custom_path_name)
 try:
     os.mkdir(folder)
 except OSError:
-    print("Répertoire %s déjà existant !" % folder)
+    print("")
 else:
-    print("Répertoire %s créé avec succès" % folder)
+    print("")
 my_file = Path(folder, file_name)
 os.chdir(folder)
 try:
@@ -116,6 +115,7 @@ c = 0
 c1 = 1
 noprint = 0
 existe = 0
+false = 0
 while True:
     word = random.choice(open(file_name).read().split()).strip()
     if len(word) > word_length:
@@ -164,7 +164,9 @@ while guess == False:
         noprint=0
     if choice1 not in word:
         print("Lettre non trouvée !")
+        false=false+1
     if "*" not in hidden:
-        print(*hidden, sep = " ")
-        print("Vous avez gagné en",c,"tentatives !")
-        break
+        guess = True
+print("Et le mot est : \n")
+print(*hidden, sep = " ")
+print("Vous avez gagné en",c,"tentatives !")
