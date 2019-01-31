@@ -3,6 +3,7 @@ import random
 import urllib.request
 import os
 import hashlib
+import unicodedata
 from pathlib import Path
 
 #question = 1
@@ -110,6 +111,19 @@ def jeu():
     # The Game himself #
     ####################
 
+    def strip_accents(text):
+
+        try:
+            text = unicode(text, 'utf-8')
+        except NameError:  # unicode is a default on python 3
+            pass
+
+        text = unicodedata.normalize('NFD', text) \
+            .encode('ascii', 'ignore') \
+            .decode("utf-8")
+
+        return str(text)
+
     # Choose random word to guess
     c = 0
     c1 = 1
@@ -122,7 +136,7 @@ def jeu():
             word = word
             length = len(word)
             break
-    word = list(word)
+    word = list(strip_accents(word))
     print(word)
 
     hangman = (
