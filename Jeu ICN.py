@@ -5,7 +5,7 @@ import os
 import hashlib
 from pathlib import Path
 
-question = 1
+#question = 1
 word_length = 4 # minimum word length
 custom_path_name = 'wordlist' # path where word lists are stored
 def jeu():
@@ -249,10 +249,6 @@ def jeu():
     while guess == False:
         while True:
             c += 1
-            if max_false == false:
-                print(hangman[false])
-                print("Perdu ! le mot à deviner était :",word)
-                question = 1
             if c>1 and noprint==0:
                 print(*hidden, sep=" ")
             print(hangman[false])
@@ -283,21 +279,30 @@ def jeu():
                 c1 += 1
             noprint=0
         if choice1 not in word:
-            print("Lettre non trouvée !")
-            false += 1
+            if false < max_false :
+                print("Lettre non trouvée !")
+                false += 1
+            else:
+                print("")
         if "*" not in hidden:
             print("Et le mot est : \n")
             print(*hidden, sep=" ")
             print("Vous avez gagné en", c, "tentatives ! \n")
             guess = True
-            question = 1
+        if max_false == false:
+            print(hangman[false])
+            print("Perdu ! le mot à deviner était :",word)
+            #question = 1
+            guess = True
+            #question = 1
 
 # Ask if player wants to play again
-
-while question == 1:
-    jouer = str(input("voulez-vous jouer ? (oui / non) \n"))
-    if jouer == "oui" or jouer == "o" or jouer == "O":
-        jeu()
-    elif jouer == "non" or jouer == "n" or jouer == "N":
-        input("Appuyez sur une touche pour continuer... ")
-        question = 0
+#
+#while question == 1:
+#    jouer = str(input("voulez-vous jouer ? (oui / non) \n"))
+#    if jouer == "oui" or jouer == "o" or jouer == "O":
+#        jeu()
+#    elif jouer == "non" or jouer == "n" or jouer == "N":
+#        input("Appuyez sur une touche pour continuer... ")
+#        question = 0
+jeu()
