@@ -8,9 +8,10 @@ from pathlib import Path
 
 #question = 1
 word_length = 4 # minimum word length
-custom_path_name = 'wordlist' # path where word lists are stored
+custom_path_name = 'game_data' # path where word lists are stored
 def jeu():
     question = 0
+
     ####################################
     # Download and check the word list #
     ####################################
@@ -84,7 +85,15 @@ def jeu():
         # Download the wordlist
         download()
     else:
-        print(file_name, "existe !\n")
+        print("")
+
+    #########################################
+    # Ask player's name and check his score #
+    #########################################
+
+    os.chdir(folder)
+    save_name = input('Enter your name. ').title()
+
 
     # Checking of the checksum
     # Downloaded or already existing file
@@ -138,7 +147,6 @@ def jeu():
             break
     word = list(strip_accents(word))
     print(word)
-
     hangman = (
     """
         
@@ -253,7 +261,7 @@ def jeu():
         """)
 
     print("Mot trouvé dans le dictionnaire...Le jeu commence !\n \n")
-
+    deja_saisie = []
     max_false = len(hangman) - 1
     guess = False
     hidden = []
@@ -278,6 +286,7 @@ def jeu():
                 print("Valeur saisie non valide.", end=" ")
                 noprint = 1
                 continue
+
         if choice1 in word:
             for i in range(len(word)):
                 if hidden[i] == choice1.upper():
@@ -292,20 +301,59 @@ def jeu():
                 print("Lettre trouvée !")
                 c1 += 1
             noprint=0
+
         if choice1 not in word:
-            if false < max_false :
+            if false < max_false and choice1 not in deja_saisie:
                 print("Lettre non trouvée !")
+                deja_saisie.append(choice1)
                 false += 1
             else:
                 print("")
+
         if "*" not in hidden:
             print("Et le mot est : \n")
             print(*hidden, sep=" ")
             print("Vous avez gagné en", c, "tentatives ! \n")
+
+            ################
+            # Scores etc...#
+            ################
+
+            total_score = c * 10 - false * 5
+            save_score = total_score
+            last_high_score = 0
+            f = open("scores.txt", "w+")
+            f.close
+            # look for highscore
+            text_file = open("scores.txt", "r")
+            for line in text_file.readlines():
+                # you can use regular expressions here to simplify the lookup
+                # get the las part of the score assuming the pattern:
+                # "text[ a un score de] score"
+
+                line_parts = line.split(" a un score de ")
+                if len(line_parts) > 1:
+                    # removing the end \n character
+                    line_parts = line_parts[-1].split("\n")
+                    score = line_parts[0]
+                    # compare the last high score with the newest
+                    if score.isdigit() and int(score) > last_high_score:
+                        last_high_score = int(score)
+
+            # check if there is a new high score
+            print("\n")
+            text_file = open("scores.txt", "r")
+            whole_thing = text_file.read()
+            print(whole_thing)
+            text_file.close()
+            if int(save_score) > last_high_score:
+                text_file = open("scores.txt", "a")
+                text_file.write("\n" + save_name + ' a un score de ' + save_score + "\n")
+                text_file.close()
             guess = True
         if max_false == false:
             print(hangman[false])
-            print("Perdu ! le mot à deviner était :",word)
+            print("Perdu ! le mot à deviner était :", *word, sep=" ")
             #question = 1
             guess = True
             #question = 1
