@@ -5,10 +5,31 @@ import os
 import hashlib
 import unicodedata
 from pathlib import Path
+from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWUSR
 
 #question = 1
 word_length = 4 # minimum word length
 custom_path_name = 'game_data' # path where word lists are stored
+
+def checksum(file_checksum, md5):
+    hasher1 = hashlib.md5()
+    afile1 = open(file_checksum, 'rb')
+    buf1 = afile1.read()
+    a = hasher1.update(buf1)
+    md5_a = (str(hasher1.hexdigest()))
+    # Base-checksum already defined on section 'selector'
+
+    # Compare md5
+    if md5_a != md5:
+        print(md5_a)
+        print(md5)
+        print("Checksums WRONG \n")
+        try:
+            os.remove(file_checksum)
+        except OSError as e:  # if failed, report it back to the user #
+            print("Error: %s - %s." % (e.filename, e.strerror))
+            download()
+
 def jeu():
     question = 0
 
@@ -67,7 +88,6 @@ def jeu():
         f.write(data)
         f.close()
 
-
     # Check if the file already exists and his path
     cwd = os.getcwd()
     folder = os.path.join(cwd, custom_path_name)
@@ -92,29 +112,12 @@ def jeu():
     #########################################
 
     os.chdir(folder)
-    save_name = input('Enter your name. ').title()
+    save_name = input('Entrez votre nom. ').title()
 
 
     # Checking of the checksum
     # Downloaded or already existing file
-    hasher1 = hashlib.md5()
-    afile1 = open(my_file, 'rb')
-    buf1 = afile1.read()
-    a = hasher1.update(buf1)
-    md5_a = (str(hasher1.hexdigest()))
-    # Base-checksum already defined on section 'selector'
-
-    # Compare md5
-    if md5_a != md5_b:
-        print(md5_a)
-        print(md5_b)
-        print("Checksums WRONG \n")
-        try:
-            os.remove(my_file)
-        except OSError as e:  # if failed, report it back to the user #
-            print("Error: %s - %s." % (e.filename, e.strerror))
-        # Re-download the file
-        download()
+    checksum(my_file, md5_b)
 
     ####################
     # The Game himself #
@@ -318,38 +321,44 @@ def jeu():
             ################
             # Scores etc...#
             ################
+            score_file = Path(folder, "score")
+            try:
+                score_path = score_file.resolve(strict=True)
+            except FileNotFoundError:
+                print("")
+            else:
+                print("")
+                os.chmod("score", S_IWUSR | S_IREAD)
 
-            total_score = c * 10 - false * 5
+            total_score = c1 * 10 - false * 5
             save_score = total_score
-            last_high_score = 0
-            f = open("scores.txt", "w+")
-            f.close
+            meilleur = 0
+
             # look for highscore
-            text_file = open("scores.txt", "r")
-            for line in text_file.readlines():
-                # you can use regular expressions here to simplify the lookup
-                # get the las part of the score assuming the pattern:
-                # "text[ a un score de] score"
+            try:
+                fichier = open("score", "r")
+                for line in fichier.readlines():
 
-                line_parts = line.split(" a un score de ")
-                if len(line_parts) > 1:
-                    # removing the end \n character
-                    line_parts = line_parts[-1].split("\n")
-                    score = line_parts[0]
-                    # compare the last high score with the newest
-                    if score.isdigit() and int(score) > last_high_score:
-                        last_high_score = int(score)
+                    line_parts = line.split(" a un score de ")
+                    if len(line_parts) > 1:
+                        line_parts = line_parts[-1].split("\n")
+                        score = line_parts[0]
+                        # compare scores
+                        if score.isdigit() and int(score) > meilleur:
+                            meilleur = int(score)
+            except FileNotFoundError:
+                pass
 
-            # check if there is a new high score
+            if int(save_score) > meilleur:
+                fichier = open("score", "a")
+                fichier.write("\n" + str(save_name) + ' a un score de ' + str(save_score) + "\n")
+                fichier.close()
+
             print("\n")
-            text_file = open("scores.txt", "r")
-            whole_thing = text_file.read()
-            print(whole_thing)
-            text_file.close()
-            if int(save_score) > last_high_score:
-                text_file = open("scores.txt", "a")
-                text_file.write("\n" + save_name + ' a un score de ' + save_score + "\n")
-                text_file.close()
+            fichier = open("score", "r")
+            tout_lire = fichier.read()
+            print(tout_lire)
+            fichier.close()
             guess = True
         if max_false == false:
             print(hangman[false])
@@ -357,7 +366,7 @@ def jeu():
             #question = 1
             guess = True
             #question = 1
-
+    os.chmod("score", S_IREAD)
 # Ask if player wants to play again
 #
 #while question == 1:
