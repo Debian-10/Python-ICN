@@ -10,6 +10,8 @@ from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWUSR
 #question = 1
 word_length = 4 # minimum word length
 custom_path_name = 'game_data' # path where word lists are stored
+points_score_letter = 7
+points_score_false = 3
 
 def checksum(file_checksum, md5):
     hasher1 = hashlib.md5()
@@ -330,7 +332,7 @@ def jeu():
                 print("")
                 os.chmod("score", S_IWUSR | S_IREAD)
 
-            total_score = c1 * 10 - false * 5
+            total_score = c1 * points_score_letter - false * points_score_false
             save_score = total_score
             meilleur = 0
 
