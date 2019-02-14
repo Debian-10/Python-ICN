@@ -151,7 +151,6 @@ def jeu():
     word = list(strip_accents(word))
     if "-" in word:
         word.remove("-")
-    print(word)
     hangman = (
     """
         
