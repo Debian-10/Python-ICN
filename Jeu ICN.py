@@ -50,13 +50,11 @@ def jeu():
         try:
             choice = int(choice)
             if choice > 5 or choice < 1:
-                os.system("clear")
                 print("Valeur saisie non valide.", end=" ")
                 continue
             else:
                 break
         except ValueError:
-            os.system("clear")
             print("Valeur saisie non valide.", end=" ")
             continue
 
